@@ -31,7 +31,7 @@ class MilestoneValidator:
         }
         
         # Load milestone definitions
-        with open('milestones/definitions.json', 'r') as f:
+        with open('../milestones/definitions.json', 'r') as f:
             self.milestones = json.load(f)
     
     def validate(self):
