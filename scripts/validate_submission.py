@@ -30,8 +30,18 @@ class MilestoneValidator:
             "llmPromptsCount": 0
         }
         
+        # Fix: Get the script's directory and find milestones relative to it
+        script_dir = Path(__file__).parent.absolute()
+        repo_root = script_dir.parent  # Go up from scripts/ to repo root
+        milestone_file = repo_root / "milestones" / "definitions.json"
+        
+        print(f"Looking for milestone definitions at: {milestone_file}")
+        
         # Load milestone definitions
-        with open('../milestones/definitions.json', 'r') as f:
+        if not milestone_file.exists():
+            raise FileNotFoundError(f"Milestone definitions not found at {milestone_file}")
+            
+        with open(milestone_file, 'r') as f:
             self.milestones = json.load(f)
     
     def validate(self):
@@ -83,6 +93,9 @@ class MilestoneValidator:
                 success = self.validate_test_coverage(milestone_id, milestone)
             elif milestone["type"] == "new_card":
                 success = self.validate_new_card(milestone_id, milestone)
+            elif milestone["type"] == "custom_test":
+                # For now, skip custom tests or implement later
+                success = False
             else:
                 success = False
                 
@@ -110,9 +123,12 @@ class MilestoneValidator:
     
     def validate_bug_fix(self, milestone_id, milestone):
         """Run bug fix tests"""
-        test_file = f"tests/bugs/test_{milestone_id}.py"
+        # Fix: Get proper path to test files
+        script_dir = Path(__file__).parent.absolute()
+        repo_root = script_dir.parent
+        test_file = repo_root / "tests" / "bugs" / f"test_{milestone_id}.py"
         
-        if not os.path.exists(test_file):
+        if not test_file.exists():
             raise Exception(f"Test file {test_file} not found")
         
         # Create temp directory for testing
@@ -130,10 +146,11 @@ class MilestoneValidator:
             env['PYTHONPATH'] = str(tmpdir)
             
             result = subprocess.run(
-                ["poetry", "run", "pytest", test_file, "-xvs"],
+                ["poetry", "run", "pytest", str(test_file), "-xvs"],
                 capture_output=True,
                 text=True,
-                env=env
+                env=env,
+                cwd=repo_root  # Run from repo root
             )
             
             return result.returncode == 0
@@ -188,9 +205,13 @@ class MilestoneValidator:
     def validate_new_card(self, milestone_id, milestone):
         """Validate new card implementation"""
         card_name = milestone["card_name"]
-        test_file = f"tests/cards/test_{card_name.lower()}.py"
         
-        if not os.path.exists(test_file):
+        # Fix: Get proper path to test files
+        script_dir = Path(__file__).parent.absolute()
+        repo_root = script_dir.parent
+        test_file = repo_root / "tests" / "cards" / f"test_{card_name.lower()}.py"
+        
+        if not test_file.exists():
             raise Exception(f"Test file {test_file} not found")
         
         # Check if card exists in student code
@@ -231,10 +252,11 @@ except:
             
             # Run card-specific tests
             result = subprocess.run(
-                ["poetry", "run", "pytest", test_file, "-xvs"],
+                ["poetry", "run", "pytest", str(test_file), "-xvs"],
                 capture_output=True,
                 text=True,
-                env=env
+                env=env,
+                cwd=repo_root  # Run from repo root
             )
             
             return result.returncode == 0
@@ -247,10 +269,25 @@ if __name__ == "__main__":
     parser.add_argument("--student-code", required=True)
     args = parser.parse_args()
     
-    validator = MilestoneValidator(
-        args.student_code,
-        args.team,
-        args.repo,
-        args.sha
-    )
-    validator.validate()
+    try:
+        validator = MilestoneValidator(
+            args.student_code,
+            args.team,
+            args.repo,
+            args.sha
+        )
+        validator.validate()
+    except Exception as e:
+        # Output error as JSON
+        error_result = {
+            "team": args.team,
+            "repository": args.repo,
+            "sha": args.sha,
+            "timestamp": datetime.now().isoformat(),
+            "totalPoints": 0,
+            "passed": [],
+            "failed": [],
+            "error": str(e)
+        }
+        print(json.dumps(error_result, indent=2))
+        sys.exit(1)
