@@ -1,0 +1,81 @@
+{
+  "bug_estate_supply": {
+    "name": "Estate Supply Bug Fix",
+    "type": "bug_fix",
+    "points": 20,
+    "success_message": "Great! Estate cards are now created correctly instead of drawn from supply.",
+    "failure_hint": "Check game initialization - Estate cards shouldn't reduce the supply count"
+  },
+  "bug_controller_params": {
+    "name": "Controller Parameter Bug",
+    "type": "bug_fix", 
+    "points": 15,
+    "success_message": "All action cards now correctly receive the controller/game parameter!",
+    "failure_hint": "Some action cards are missing the controller parameter in their play() method"
+  },
+  "bug_prompt_formatting": {
+    "name": "Prompt Formatting Bug",
+    "type": "bug_fix",
+    "points": 10,
+    "success_message": "String formatting in pick_cards_from_list is now working correctly!",
+    "failure_hint": "Check the f-string formatting in the controller's pick_cards_from_list method"
+  },
+  "test_coverage_player": {
+    "name": "Player Module Test Coverage",
+    "type": "test_coverage",
+    "points": 15,
+    "module": "player",
+    "threshold": 80,
+    "success_message": "Excellent test coverage for the Player class!",
+    "failure_hint": "Add more tests to tests/test_player.py to reach 80% coverage"
+  },
+  "test_coverage_supply": {
+    "name": "Supply Module Test Coverage",
+    "type": "test_coverage",
+    "points": 15,
+    "module": "supply",
+    "threshold": 80,
+    "success_message": "Great test coverage for the Supply class!",
+    "failure_hint": "Add more tests to tests/test_supply.py to reach 80% coverage"
+  },
+  "test_action_cards": {
+    "name": "Action Card Tests",
+    "type": "custom_test",
+    "points": 20,
+    "success_message": "Comprehensive tests for action cards completed!",
+    "failure_hint": "Write tests for at least 5 action cards",
+    "validation_script": "check_action_card_tests.py"
+  },
+  "card_laboratory": {
+    "name": "Laboratory Card Implementation",
+    "type": "new_card",
+    "points": 25,
+    "card_name": "Laboratory",
+    "success_message": "Laboratory card implemented perfectly! +2 Cards, +1 Action",
+    "failure_hint": "Laboratory should draw 2 cards and give +1 action"
+  },
+  "card_gardens": {
+    "name": "Gardens Card Implementation",
+    "type": "new_card",
+    "points": 30,
+    "card_name": "Gardens",
+    "success_message": "Gardens card implemented correctly! Worth 1 VP per 10 cards.",
+    "failure_hint": "Gardens should be worth 1 VP for every 10 cards in your deck (rounded down)"
+  },
+  "card_witch": {
+    "name": "Witch Card Implementation",
+    "type": "new_card",
+    "points": 40,
+    "card_name": "Witch",
+    "success_message": "Witch card works great! A powerful attack card.",
+    "failure_hint": "Witch should draw 2 cards and give each other player a Curse"
+  },
+  "llm_prompt_log": {
+    "name": "LLM Prompt Documentation",
+    "type": "custom_test",
+    "points": 10,
+    "success_message": "Great job documenting your LLM usage!",
+    "failure_hint": "Document at least 5 effective LLM prompts in your claim.json",
+    "validation_script": "check_prompt_log.py"
+  }
+}
