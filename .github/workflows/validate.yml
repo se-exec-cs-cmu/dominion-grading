@@ -1,0 +1,131 @@
+name: Validate Student Submission
+
+on:
+  repository_dispatch:
+    types: [validate-submission]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout grading repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+    
+    - name: Checkout student code
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.client_payload.repository }}
+        ref: ${{ github.event.client_payload.sha }}
+        path: student-code
+        token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
+    
+    - name: Security check
+      run: |
+        poetry run python scripts/security_check.py student-code/
+      continue-on-error: false
+    
+    - name: Validate submission
+      id: validate
+      run: |
+        poetry run python scripts/validate_submission.py \
+          --repo "${{ github.event.client_payload.repository }}" \
+          --team "${{ github.event.client_payload.team }}" \
+          --sha "${{ github.event.client_payload.sha }}" \
+          --student-code ./student-code \
+          > results.json
+    
+    - name: Post results to student repo
+      if: always()
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
+        script: |
+          const fs = require('fs');
+          let results;
+          
+          try {
+            results = JSON.parse(fs.readFileSync('results.json', 'utf8'));
+          } catch (error) {
+            results = {
+              team: '${{ github.event.client_payload.team }}',
+              error: 'Validation failed to complete',
+              totalPoints: 0
+            };
+          }
+          
+          // Read comment template
+          const template = fs.readFileSync('templates/comment_template.md', 'utf8');
+          
+          // Replace placeholders
+          let comment = template
+            .replace('{{TEAM}}', results.team)
+            .replace('{{TOTAL_POINTS}}', results.totalPoints)
+            .replace('{{TIMESTAMP}}', new Date().toISOString());
+          
+          // Add passed milestones
+          if (results.passed && results.passed.length > 0) {
+            const passedList = results.passed
+              .map(m => `- ✅ **${m.name}** (+${m.points} pts): ${m.message}`)
+              .join('\n');
+            comment = comment.replace('{{PASSED_MILESTONES}}', passedList);
+          } else {
+            comment = comment.replace('{{PASSED_MILESTONES}}', '*No milestones passed*');
+          }
+          
+          // Add failed milestones
+          if (results.failed && results.failed.length > 0) {
+            const failedList = results.failed
+              .map(m => `- ❌ **${m.name}**: ${m.hint}`)
+              .join('\n');
+            comment = comment.replace('{{FAILED_MILESTONES}}', failedList);
+          } else {
+            comment = comment.replace('{{FAILED_MILESTONES}}', '*None*');
+          }
+          
+          // Add LLM bonus
+          if (results.llmBonus > 0) {
+            comment = comment.replace('{{LLM_BONUS}}', 
+              `🎉 **Bonus Points**: +${results.llmBonus} for documenting ${results.llmPromptsCount} LLM prompts!`);
+          } else {
+            comment = comment.replace('{{LLM_BONUS}}', '');
+          }
+          
+          // Post comment
+          const [owner, repo] = '${{ github.event.client_payload.repository }}'.split('/');
+          await github.rest.repos.createCommitComment({
+            owner,
+            repo,
+            commit_sha: '${{ github.event.client_payload.sha }}',
+            body: comment
+          });
+    
+    - name: Update dashboard
+      if: always()
+      run: |
+        poetry run python scripts/update_dashboard.py \
+          --results results.json \
+          --output dashboard/data.json
+        
+    - name: Commit dashboard updates
+      if: always()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add dashboard/data.json
+        git commit -m "Update dashboard for team ${{ github.event.client_payload.team }}" || exit 0
+        git push

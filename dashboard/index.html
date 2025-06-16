@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dominion Workshop Leaderboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏰 Dominion Workshop Leaderboard</h1>
+            <p class="subtitle">Fix bugs, write tests, implement cards!</p>
+            <p class="last-update">Last updated: <span id="lastUpdate">Loading...</span></p>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Teams</h3>
+                <p class="stat-value" id="totalTeams">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Milestones Completed</h3>
+                <p class="stat-value" id="totalMilestones">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Points Awarded</h3>
+                <p class="stat-value" id="totalPoints">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Most Popular Milestone</h3>
+                <p class="stat-value" id="popularMilestone">-</p>
+            </div>
+        </section>
+
+        <section class="leaderboard">
+            <h2>Team Rankings</h2>
+            <table id="rankingsTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Team</th>
+                        <th>Points</th>
+                        <th>Milestones</th>
+                        <th>Last Activity</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody id="rankingsBody">
+                </tbody>
+            </table>
+        </section>
+
+        <section class="timeline">
+            <h2>Recent Activity</h2>
+            <div id="activityFeed" class="activity-feed">
+            </div>
+        </section>
+
+        <section class="milestones">
+            <h2>Milestone Completion</h2>
+            <div id="milestoneGrid" class="milestone-grid">
+            </div>
+        </section>
+
+        <section class="charts">
+            <div class="chart-container">
+                <h3>Points Over Time</h3>
+                <canvas id="pointsChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Milestone Completion Rate</h3>
+                <canvas id="completionChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
