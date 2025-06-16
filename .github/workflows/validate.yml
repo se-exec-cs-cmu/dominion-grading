@@ -119,13 +119,13 @@ jobs:
       run: |
         poetry run python scripts/update_dashboard.py \
           --results results.json \
-          --output dashboard/data.json
+          --output docs/data.json
         
     - name: Commit dashboard updates
       if: always()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add dashboard/data.json
+        git add docs/data.json
         git commit -m "Update dashboard for team ${{ github.event.client_payload.team }}" || exit 0
         git push
