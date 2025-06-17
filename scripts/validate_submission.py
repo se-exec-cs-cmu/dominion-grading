@@ -134,6 +134,37 @@ class MilestoneValidator:
                 "hint": f"Validation error: {str(e)}"
             })
     
+    def validate_custom_milestone(self, custom):
+        """Validate a custom milestone has required fields"""
+        # Check required fields
+        if not isinstance(custom, dict):
+            return False
+    
+        # Must have at least id and name
+        if not custom.get("id") or not custom.get("name"):
+            return False
+    
+        # ID should be alphanumeric with underscores (like other milestone IDs)
+        custom_id = custom["id"]
+        if not all(c.isalnum() or c == '_' for c in custom_id):
+            return False
+    
+        # Name and description should be non-empty strings
+        name = custom.get("name", "")
+        description = custom.get("description", "")
+    
+        if not isinstance(name, str) or len(name.strip()) < 3:
+            return False
+    
+        if not isinstance(description, str) or len(description.strip()) < 10:
+            return False
+    
+        # Reasonable length limits
+        if len(name) > 500 or len(description) > 5000:
+            return False
+    
+        return True
+    
     def validate_bug_fix(self, milestone_id, milestone):
         """Run bug fix tests"""
         # Get proper path to test files
