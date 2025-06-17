@@ -1,128 +1,114 @@
-name: Validate Student Submission
-
-on:
-  repository_dispatch:
-    types: [validate-submission]
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    permissions:
-        contents: write
-    
-    steps:
-    - name: Checkout grading repository
-      uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
-      with:
-        virtualenvs-create: true
-        virtualenvs-in-project: true
-    
-    - name: Install dependencies
-      run: poetry install --no-interaction --no-root
-    
-    - name: Checkout student code
-      uses: actions/checkout@v3
-      with:
-        repository: ${{ github.event.client_payload.repository }}
-        ref: ${{ github.event.client_payload.sha }}
-        path: student-code
-        token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
-    
-    - name: Validate submission
-      id: validate
-      run: |
-        poetry run python scripts/validate_submission.py \
-          --repo "${{ github.event.client_payload.repository }}" \
-          --team "${{ github.event.client_payload.team }}" \
-          --sha "${{ github.event.client_payload.sha }}" \
-          --student-code ./student-code \
-          > results.json
-    
-    - name: Post results to student repo
-      if: always()
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
-        script: |
-          const fs = require('fs');
-          let results;
+- name: Post results to student repo
+  if: always()
+  uses: actions/github-script@v6
+  with:
+    github-token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
+    script: |
+      const fs = require('fs');
+      let results;
+      
+      try {
+        const content = fs.readFileSync('results.json', 'utf8');
+        results = JSON.parse(content);
+      } catch (error) {
+        console.error('Failed to read results:', error);
+        results = {
+          team: '${{ github.event.client_payload.team }}',
+          error: 'Failed to parse validation results',
+          totalPoints: 0,
+          passed: [],
+          failed: []
+        };
+      }
+      
+      // Build comment text
+      let comment = `## 🎯 Validation Results\n\n`;
+      comment += `**Team:** ${results.team}\n`;
+      comment += `**Total Points:** ${results.totalPoints} 🏆\n\n`;
+      
+      if (results.passed && results.passed.length > 0) {
+        comment += `### ✅ Passed Milestones\n\n`;
+        results.passed.forEach(m => {
+          comment += `- **${m.name}** (+${m.points} pts): ${m.message}\n`;
+        });
+        comment += '\n';
+      }
+      
+      if (results.failed && results.failed.length > 0) {
+        comment += `### ❌ Failed Milestones\n\n`;
+        results.failed.forEach(m => {
+          comment += `- **${m.name}**: ${m.hint}\n`;
+        });
+        comment += '\n';
+      }
+      
+      if (results.llmBonus && results.llmBonus > 0) {
+        comment += `### 🤖 LLM Usage Bonus\n`;
+        comment += `+${results.llmBonus} points for documenting ${results.llmPromptsCount} prompts!\n\n`;
+      }
+      
+      comment += `---\n`;
+      comment += `*Validated at: ${new Date().toISOString()}*\n`;
+      comment += `*Check the [Leaderboard](https://se-exec-cs-cmu.github.io/dominion-grading/) for current standings!*`;
+      
+      // Parse repository info
+      const [owner, repo] = '${{ github.event.client_payload.repository }}'.split('/');
+      
+      console.log(`Posting to ${owner}/${repo}`);
+      
+      // Find the submissions issue
+      try {
+        const issues = await github.rest.issues.listForRepo({
+          owner: owner,
+          repo: repo,
+          state: 'open',
+          labels: 'submissions'
+        });
+        
+        console.log(`Found ${issues.data.length} submission issues`);
+        
+        if (issues.data.length > 0) {
+          // Post to existing issue
+          const issueNumber = issues.data[0].number;
+          console.log(`Posting comment to issue #${issueNumber}`);
           
-          try {
-            results = JSON.parse(fs.readFileSync('results.json', 'utf8'));
-          } catch (error) {
-            results = {
-              team: '${{ github.event.client_payload.team }}',
-              error: 'Validation failed to complete',
-              totalPoints: 0
-            };
-          }
+          await github.rest.issues.createComment({
+            owner: owner,
+            repo: repo,
+            issue_number: issueNumber,
+            body: comment
+          });
           
-          // Read comment template
-          const template = fs.readFileSync('templates/comment_template.md', 'utf8');
+          console.log('Comment posted successfully');
+        } else {
+          // Create new issue
+          console.log('No submissions issue found, creating one');
           
-          // Replace placeholders
-          let comment = template
-            .replace('{{TEAM}}', results.team)
-            .replace('{{TOTAL_POINTS}}', results.totalPoints)
-            .replace('{{TIMESTAMP}}', new Date().toISOString());
+          const newIssue = await github.rest.issues.create({
+            owner: owner,
+            repo: repo,
+            title: 'Submission Results',
+            body: 'This issue tracks validation results for your submissions.\n\n' + comment,
+            labels: ['submissions']
+          });
           
-          // Add passed milestones
-          if (results.passed && results.passed.length > 0) {
-            const passedList = results.passed
-              .map(m => `- ✅ **${m.name}** (+${m.points} pts): ${m.message}`)
-              .join('\n');
-            comment = comment.replace('{{PASSED_MILESTONES}}', passedList);
-          } else {
-            comment = comment.replace('{{PASSED_MILESTONES}}', '*No milestones passed*');
-          }
-          
-          // Add failed milestones
-          if (results.failed && results.failed.length > 0) {
-            const failedList = results.failed
-              .map(m => `- ❌ **${m.name}**: ${m.hint}`)
-              .join('\n');
-            comment = comment.replace('{{FAILED_MILESTONES}}', failedList);
-          } else {
-            comment = comment.replace('{{FAILED_MILESTONES}}', '*None*');
-          }
-          
-          // Add LLM bonus
-          if (results.llmBonus > 0) {
-            comment = comment.replace('{{LLM_BONUS}}', 
-              `🎉 **Bonus Points**: +${results.llmBonus} for documenting ${results.llmPromptsCount} LLM prompts!`);
-          } else {
-            comment = comment.replace('{{LLM_BONUS}}', '');
-          }
-          
-          // Post comment
-          const [owner, repo] = '${{ github.event.client_payload.repository }}'.split('/');
+          console.log(`Created new issue #${newIssue.data.number}`);
+        }
+      } catch (error) {
+        console.error('Failed to post comment:', error);
+        console.error('Error details:', error.message);
+        
+        // Try posting as commit comment as fallback
+        console.log('Attempting to post as commit comment instead');
+        try {
           await github.rest.repos.createCommitComment({
-            owner,
-            repo,
+            owner: owner,
+            repo: repo,
             commit_sha: '${{ github.event.client_payload.sha }}',
             body: comment
           });
-    
-    - name: Update dashboard
-      if: always()
-      run: |
-        poetry run python scripts/update_dashboard.py \
-          --results results.json \
-          --output docs/data.json
-        
-    - name: Commit dashboard updates
-      if: always()
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add docs/data.json
-        git commit -m "Update dashboard for team ${{ github.event.client_payload.team }}" || exit 0
-        git push
+          console.log('Posted as commit comment');
+        } catch (commitError) {
+          console.error('Failed to post commit comment:', commitError);
+        }
+      }

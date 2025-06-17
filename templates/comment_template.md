@@ -15,4 +15,4 @@
 
 ---
 *Validated at: {{TIMESTAMP}}*  
-*Check the [Leaderboard](https://YOUR_ORG.github.io/dominion-grading/) for current standings!*
+*Check the [Leaderboard](https://se-exec-cs-cmu.github.io/dominion-grading/) for current standings!*
