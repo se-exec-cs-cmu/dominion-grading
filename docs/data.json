@@ -85,26 +85,35 @@
       "lastSubmission": "2025-06-17T03:03:40.283916"
     },
     "claire-test-submission": {
-      "totalPoints": 0,
-      "completedMilestones": [],
+      "totalPoints": 20,
+      "completedMilestones": [
+        "bug_estate_supply"
+      ],
       "submissions": [
         {
           "timestamp": "2025-06-17T12:09:44-04:00",
           "points": 0,
           "passed": 0,
           "failed": 2
+        },
+        {
+          "timestamp": "2025-06-17T12:17:08-04:00",
+          "points": 20,
+          "passed": 1,
+          "failed": 1
         }
       ],
-      "lastSubmission": "2025-06-17T12:09:44-04:00"
+      "lastSubmission": "2025-06-17T12:17:08-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T16:10:36.036895",
+  "lastUpdate": "2025-06-17T16:17:49.526911",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
       "points": 20,
       "completedBy": [
-        "test-team"
+        "test-team",
+        "claire-test-submission"
       ]
     }
   },
@@ -114,6 +123,12 @@
       "team": "unknown",
       "event": "Submission failed - see logs",
       "points": 0
+    },
+    {
+      "timestamp": "2025-06-17T12:17:08-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
     },
     {
       "timestamp": "2025-06-17T02:59:39.220511",
