@@ -1,3 +1,51 @@
+name: Validate Student Submission
+
+on:
+  repository_dispatch:
+    types: [validate-submission]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    
+    steps:
+    - name: Checkout grading repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    
+    - name: Install dependencies
+      run: poetry install --no-interaction --no-root
+    
+    - name: Checkout student code
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.event.client_payload.repository }}
+        ref: ${{ github.event.client_payload.sha }}
+        path: student-code
+        token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
+    
+    - name: Validate submission
+      id: validate
+      run: |
+        poetry run python scripts/validate_submission.py \
+          --repo "${{ github.event.client_payload.repository }}" \
+          --team "${{ github.event.client_payload.team }}" \
+          --sha "${{ github.event.client_payload.sha }}" \
+          --student-code ./student-code \
+          > results.json
+    
 - name: Post results to student repo
   if: always()
   uses: actions/github-script@v6
@@ -112,3 +160,19 @@
           console.error('Failed to post commit comment:', commitError);
         }
       }
+    
+    - name: Update dashboard
+      if: always()
+      run: |
+        poetry run python scripts/update_dashboard.py \
+          --results results.json \
+          --output docs/data.json
+        
+    - name: Commit dashboard updates
+      if: always()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/data.json
+        git commit -m "Update dashboard for team ${{ github.event.client_payload.team }}" || exit 0
+        git push
