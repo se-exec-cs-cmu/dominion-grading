@@ -1,146 +1,34 @@
 {
   "teams": {
-    "test-team": {
-      "totalPoints": 100,
-      "completedMilestones": [
-        "bug_estate_supply",
-        "test_coverage_player"
-      ],
-      "submissions": [
-        {
-          "timestamp": "2024-01-15T12:00:00Z",
-          "points": 50,
-          "passed": 1,
-          "failed": 0
-        },
-        {
-          "timestamp": "2024-01-15T13:00:00Z",
-          "points": 100,
-          "passed": 2,
-          "failed": 0
-        }
-      ],
-      "lastSubmission": "2024-01-15T13:00:00Z"
-    },
-    "unknown": {
-      "totalPoints": 0,
-      "completedMilestones": [],
-      "submissions": [
-        {
-          "timestamp": "2025-06-17T01:53:35.445747",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
-        },
-        {
-          "timestamp": "2025-06-17T02:18:59.647128",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
-        },
-        {
-          "timestamp": "2025-06-17T02:24:06.200505",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
-        },
-        {
-          "timestamp": "2025-06-17T02:41:35.689402",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
-        },
-        {
-          "timestamp": "2025-06-17T02:59:39.220511",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
-        },
-        {
-          "timestamp": "2025-06-17T16:06:27.441937",
-          "points": 0,
-          "passed": 0,
-          "failed": 0,
-          "error": "Results file results.json not found"
-        }
-      ],
-      "lastSubmission": "2025-06-17T16:06:27.441937"
-    },
-    "fun-with-agents-dominion-with-a-twist-hari-test-submission": {
-      "totalPoints": 0,
-      "completedMilestones": [],
-      "submissions": [
-        {
-          "timestamp": "2025-06-17T03:03:40.283916",
-          "points": 0,
-          "passed": 0,
-          "failed": 2
-        }
-      ],
-      "lastSubmission": "2025-06-17T03:03:40.283916"
-    },
     "claire-test-submission": {
-      "totalPoints": 0,
-      "completedMilestones": [],
+      "totalPoints": 35,
+      "completedMilestones": [
+        "bug_controller_params",
+        "bug_estate_supply"
+      ],
       "submissions": [
         {
-          "timestamp": "2025-06-17T12:09:44-04:00",
-          "points": 0,
-          "passed": 0,
-          "failed": 2
-        },
-        {
-          "timestamp": "2025-06-17T12:17:08-04:00",
-          "points": 20,
-          "passed": 1,
-          "failed": 1
-        },
-        {
-          "timestamp": "2025-06-17T12:29:56-04:00",
-          "points": 35,
-          "passed": 2,
-          "failed": 0
-        },
-        {
-          "timestamp": "2025-06-17T12:41:26-04:00",
-          "points": 35,
-          "passed": 2,
-          "failed": 1
-        },
-        {
-          "timestamp": "2025-06-17T12:48:05-04:00",
+          "timestamp": "2025-06-17T14:00:19-04:00",
           "points": 35,
           "passed": 2,
           "failed": 2
-        },
-        {
-          "timestamp": "2025-06-17T12:58:25-04:00",
-          "points": 0,
-          "passed": 0,
-          "failed": 1
         }
       ],
-      "lastSubmission": "2025-06-17T12:58:25-04:00"
+      "lastSubmission": "2025-06-17T14:00:19-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T16:59:10.235359",
+  "lastUpdate": "2025-06-17T18:01:16.560224",
   "milestoneStats": {
-    "bug_estate_supply": {
-      "name": "Estate Supply Bug",
-      "points": 20,
-      "completedBy": [
-        "test-team",
-        "claire-test-submission"
-      ]
-    },
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
       "points": 15,
+      "completedBy": [
+        "claire-test-submission"
+      ]
+    },
+    "bug_estate_supply": {
+      "name": "Estate Supply Bug Fix",
+      "points": 20,
       "completedBy": [
         "claire-test-submission"
       ]
@@ -148,87 +36,15 @@
   },
   "timeline": [
     {
-      "timestamp": "2025-06-17T16:06:27.441937",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2025-06-17T12:48:05-04:00",
-      "team": "claire-test-submission",
-      "event": "Completed Estate Supply Bug Fix",
-      "points": 20
-    },
-    {
-      "timestamp": "2025-06-17T12:48:05-04:00",
+      "timestamp": "2025-06-17T14:00:19-04:00",
       "team": "claire-test-submission",
       "event": "Completed Controller Parameter Bug",
       "points": 15
     },
     {
-      "timestamp": "2025-06-17T12:41:26-04:00",
+      "timestamp": "2025-06-17T14:00:19-04:00",
       "team": "claire-test-submission",
       "event": "Completed Estate Supply Bug Fix",
-      "points": 20
-    },
-    {
-      "timestamp": "2025-06-17T12:41:26-04:00",
-      "team": "claire-test-submission",
-      "event": "Completed Controller Parameter Bug",
-      "points": 15
-    },
-    {
-      "timestamp": "2025-06-17T12:29:56-04:00",
-      "team": "claire-test-submission",
-      "event": "Completed Estate Supply Bug Fix",
-      "points": 20
-    },
-    {
-      "timestamp": "2025-06-17T12:29:56-04:00",
-      "team": "claire-test-submission",
-      "event": "Completed Controller Parameter Bug",
-      "points": 15
-    },
-    {
-      "timestamp": "2025-06-17T12:17:08-04:00",
-      "team": "claire-test-submission",
-      "event": "Completed Estate Supply Bug Fix",
-      "points": 20
-    },
-    {
-      "timestamp": "2025-06-17T02:59:39.220511",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2025-06-17T02:41:35.689402",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2025-06-17T02:24:06.200505",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2025-06-17T02:18:59.647128",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2025-06-17T01:53:35.445747",
-      "team": "unknown",
-      "event": "Submission failed - see logs",
-      "points": 0
-    },
-    {
-      "timestamp": "2024-01-15T13:00:00Z",
-      "team": "test-team",
-      "event": "Completed Estate Supply Bug",
       "points": 20
     }
   ]
