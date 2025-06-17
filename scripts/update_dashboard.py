@@ -69,6 +69,7 @@ def update_dashboard(results_file, output_file):
                 "teams": {},
                 "lastUpdate": None,
                 "milestoneStats": {},
+                "customMilestones": {},
                 "timeline": []
             }
     else:
@@ -77,8 +78,13 @@ def update_dashboard(results_file, output_file):
             "teams": {},
             "lastUpdate": None,
             "milestoneStats": {},
+            "customMilestones": {},
             "timeline": []
         }
+    
+    # Ensure customMilestones exists (for older data files)
+    if "customMilestones" not in dashboard_data:
+        dashboard_data["customMilestones"] = {}
     
     # Update team data
     team = new_results.get("team", "unknown")
@@ -88,23 +94,33 @@ def update_dashboard(results_file, output_file):
         dashboard_data["teams"][team] = {
             "totalPoints": 0,
             "completedMilestones": [],
+            "customMilestones": [],
             "submissions": [],
             "lastSubmission": None
         }
     
     team_data = dashboard_data["teams"][team]
     
+    # Ensure customMilestones field exists in team data
+    if "customMilestones" not in team_data:
+        team_data["customMilestones"] = []
+    
     # Update points and milestones
     team_data["totalPoints"] = new_results.get("totalPoints", 0)
     team_data["completedMilestones"] = [m["id"] for m in new_results.get("passed", [])]
     team_data["lastSubmission"] = new_results.get("timestamp", datetime.now().isoformat())
+    
+    # Update custom milestones
+    custom_milestones = new_results.get("customMilestones", [])
+    team_data["customMilestones"] = [m["id"] for m in custom_milestones]
     
     # Add to submissions history
     submission_record = {
         "timestamp": new_results.get("timestamp", datetime.now().isoformat()),
         "points": new_results.get("totalPoints", 0),
         "passed": len(new_results.get("passed", [])),
-        "failed": len(new_results.get("failed", []))
+        "failed": len(new_results.get("failed", [])),
+        "custom": len(custom_milestones)
     }
     
     # Add error info if present
@@ -128,6 +144,18 @@ def update_dashboard(results_file, output_file):
         if team not in dashboard_data["milestoneStats"][mid]["completedBy"]:
             dashboard_data["milestoneStats"][mid]["completedBy"].append(team)
     
+    # Update custom milestone tracking
+    for custom in custom_milestones:
+        custom_id = f"{team}_{custom['id']}"  # Prefix with team to avoid conflicts
+        dashboard_data["customMilestones"][custom_id] = {
+            "team": team,
+            "id": custom["id"],
+            "name": custom["name"],
+            "description": custom["description"],
+            "points": custom.get("points", 1),
+            "timestamp": new_results.get("timestamp", datetime.now().isoformat())
+        }
+    
     # Add to timeline
     if new_results.get("passed"):
         for milestone in new_results["passed"]:
@@ -135,14 +163,27 @@ def update_dashboard(results_file, output_file):
                 "timestamp": new_results.get("timestamp", datetime.now().isoformat()),
                 "team": team,
                 "event": f"Completed {milestone.get('name', 'Unknown milestone')}",
-                "points": milestone.get("points", 0)
+                "points": milestone.get("points", 0),
+                "type": "standard"
             })
-    elif "error" in new_results:
+    
+    # Add custom milestones to timeline
+    for custom in custom_milestones:
+        dashboard_data["timeline"].append({
+            "timestamp": new_results.get("timestamp", datetime.now().isoformat()),
+            "team": team,
+            "event": f"⭐ Custom: {custom.get('name', 'Unknown')}",
+            "points": custom.get("points", 1),
+            "type": "custom"
+        })
+    
+    if "error" in new_results and not new_results.get("passed") and not custom_milestones:
         dashboard_data["timeline"].append({
             "timestamp": new_results.get("timestamp", datetime.now().isoformat()),
             "team": team,
             "event": "Submission failed - see logs",
-            "points": 0
+            "points": 0,
+            "type": "error"
         })
     
     # Sort timeline by timestamp (newest first)
