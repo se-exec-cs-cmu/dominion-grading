@@ -1,11 +1,12 @@
 {
   "teams": {
     "claire-test-submission": {
-      "totalPoints": 45,
+      "totalPoints": 70,
       "completedMilestones": [
         "bug_estate_supply",
         "llm_prompt_log",
-        "bug_controller_params"
+        "bug_controller_params",
+        "card_laboratory"
       ],
       "submissions": [
         {
@@ -31,12 +32,18 @@
           "points": 45,
           "passed": 3,
           "failed": 0
+        },
+        {
+          "timestamp": "2025-06-17T15:22:53-04:00",
+          "points": 70,
+          "passed": 4,
+          "failed": 0
         }
       ],
-      "lastSubmission": "2025-06-17T14:57:45-04:00"
+      "lastSubmission": "2025-06-17T15:22:53-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T18:58:31.699940",
+  "lastUpdate": "2025-06-17T19:23:51.592800",
   "milestoneStats": {
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
@@ -65,9 +72,40 @@
       "completedBy": [
         "claire-test-submission"
       ]
+    },
+    "card_laboratory": {
+      "name": "Laboratory Card Implementation",
+      "points": 25,
+      "completedBy": [
+        "claire-test-submission"
+      ]
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T15:22:53-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
+    },
+    {
+      "timestamp": "2025-06-17T15:22:53-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed LLM Prompt Documentation",
+      "points": 10
+    },
+    {
+      "timestamp": "2025-06-17T15:22:53-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15
+    },
+    {
+      "timestamp": "2025-06-17T15:22:53-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Laboratory Card Implementation",
+      "points": 25
+    },
     {
       "timestamp": "2025-06-17T14:57:45-04:00",
       "team": "claire-test-submission",
