@@ -72,14 +72,7 @@ class MilestoneValidator:
                     "name": f"Unknown milestone: {milestone_id}",
                     "hint": "This milestone ID doesn't exist"
                 })
-        
-        # Check LLM usage bonus
-        llm_prompts = claims.get("llm_prompts", [])
-        self.results["llmPromptsCount"] = len(llm_prompts)
-        if len(llm_prompts) >= 5:
-            self.results["llmBonus"] = 10
-            self.results["totalPoints"] += 10
-        
+                
         # Output ONLY the JSON results
         print(json.dumps(self.results, indent=2))
     
@@ -97,8 +90,12 @@ class MilestoneValidator:
             elif milestone["type"] == "new_card":
                 success = self.validate_new_card(milestone_id, milestone)
             elif milestone["type"] == "custom_test":
-                # For now, skip custom tests or implement later
-                success = False
+                if milestone_id == "test_action_cards":
+                    success = self.validate_test_action_cards(milestone_id, milestone)
+                elif milestone_id == "llm_prompt_log":
+                    success = self.validate_llm_prompt_log(milestone_id, milestone)
+                else:
+                    success = False
             else:
                 success = False
                 
@@ -269,7 +266,200 @@ class MilestoneValidator:
                 pass
             
             return False
+        
+    def validate_test_action_cards(self, milestone_id, milestone):
+        """Check that student has written tests for at least 5 action cards (including new ones)"""
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Copy student code
+            shutil.copytree(self.student_code_path, tmpdir / "student")
+            
+            # First, discover all ActionCard implementations in student code
+            os.chdir(tmpdir / "student")
+            
+            # Get list of all action cards from the student's implementation
+            discover_cmd = """
+import sys
+sys.path.insert(0, '.')
+from dominion.card import Card, ActionCard
+
+action_cards = []
+for card_type in Card.registered():
+    if issubclass(card_type, ActionCard) and hasattr(card_type, 'name'):
+        action_cards.append(card_type.name)
+
+print(';;;'.join(action_cards))
+"""
+            
+            try:
+                result = subprocess.run(
+                    ["python", "-c", discover_cmd],
+                    capture_output=True,
+                    text=True,
+                    cwd=tmpdir / "student"
+                )
+                
+                if result.returncode != 0:
+                    # Fall back to known cards if discovery fails
+                    available_action_cards = [
+                        'Market', 'Smithy', 'Cellar', 'Moat', 'Chancellor',
+                        'Harbinger', 'Merchant', 'Vassal', 'Village', 'Woodcutter',
+                        'Workshop', 'Militia', 'Moneylender', 'Poacher', 'Remodel',
+                        'Spy', 'Chapel', 'Bureaucrat', 'Feast', 'Mine', 'Library'
+                    ]
+                else:
+                    # Parse discovered cards
+                    available_action_cards = result.stdout.strip().split(';;;')
+                    available_action_cards = [c for c in available_action_cards if c]
+                    
+            except Exception:
+                # Fall back to known cards
+                available_action_cards = [
+                    'Market', 'Smithy', 'Cellar', 'Moat', 'Chancellor',
+                    'Harbinger', 'Merchant', 'Vassal', 'Village', 'Woodcutter',
+                    'Workshop', 'Militia', 'Moneylender', 'Poacher', 'Remodel',
+                    'Spy', 'Chapel', 'Bureaucrat', 'Feast', 'Mine', 'Library'
+                ]
+            
+            # Now check for tests of these action cards
+            tested_cards = set()
+            test_dir = self.student_code_path / "tests"
+            
+            if not test_dir.exists():
+                return False
+            
+            # Method 1: Static analysis of test files
+            for test_file in test_dir.glob("test_*.py"):
+                try:
+                    with open(test_file, 'r') as f:
+                        content = f.read()
+                    
+                    # Look for test functions that test action cards
+                    import re
+                    
+                    # Find all test function definitions
+                    test_funcs = re.findall(r'def\s+(test_\w+)', content)
+                    
+                    for test_func in test_funcs:
+                        # Check if this test function tests any known action card
+                        for card_name in available_action_cards:
+                            if card_name.lower() in test_func.lower():
+                                tested_cards.add(card_name)
+                            # Also check the content of the test
+                            elif card_name in content:
+                                # Look for patterns that indicate testing this card
+                                patterns = [
+                                    f'{card_name}Card',
+                                    f'Card.create("{card_name}")',
+                                    f'Card.get_type_with_name("{card_name}")',
+                                    f'"{card_name}"',
+                                    f"'{card_name}'"
+                                ]
+                                if any(pattern in content for pattern in patterns):
+                                    # Verify this is within the test function
+                                    # (This is a simple heuristic)
+                                    if test_func in content.split(card_name)[0].split('def ')[-1]:
+                                        tested_cards.add(card_name)
+                
+                except Exception:
+                    continue
+            
+            # Method 2: Actually run pytest with verbose output to see what's tested
+            try:
+                # Install dependencies if needed
+                if (tmpdir / "student" / "pyproject.toml").exists():
+                    subprocess.run(["poetry", "install", "--no-interaction"], 
+                                 capture_output=True, cwd=tmpdir / "student")
+                    test_cmd = ["poetry", "run", "pytest", "-v", "tests/"]
+                else:
+                    test_cmd = ["python", "-m", "pytest", "-v", "tests/"]
+                
+                result = subprocess.run(
+                    test_cmd,
+                    capture_output=True,
+                    text=True,
+                    cwd=tmpdir / "student"
+                )
+                
+                # Parse pytest output
+                for line in result.stdout.split('\n'):
+                    if '::test_' in line and ('PASSED' in line or 'FAILED' in line):
+                        # Check each action card
+                        for card_name in available_action_cards:
+                            if card_name.lower() in line.lower():
+                                tested_cards.add(card_name)
+                
+            except Exception:
+                # If pytest fails, rely on static analysis only
+                pass
+            
+            # Also check for generic action card test patterns
+            # (e.g., parameterized tests that test multiple cards)
+            for test_file in test_dir.glob("test_*.py"):
+                try:
+                    with open(test_file, 'r') as f:
+                        content = f.read()
+                    
+                    # Look for parameterized tests or loops over action cards
+                    if '@pytest.mark.parametrize' in content and 'ActionCard' in content:
+                        # This might be testing multiple action cards
+                        # Give credit for creative testing approaches
+                        # Count how many cards are mentioned in the parametrize
+                        for card_name in available_action_cards:
+                            if f'"{card_name}"' in content or f"'{card_name}'" in content:
+                                tested_cards.add(card_name)
+                
+                except Exception:
+                    continue
+        
+        # Return True if at least 5 action cards have tests
+        # This includes both original cards and any new cards students implement
+        return len(tested_cards) >= 5
     
+    def validate_llm_prompt_log(self, milestone_id, milestone):
+        """Check that student has documented at least 5 LLM prompts"""
+    
+        # Note: This validation is actually already partially done in the main validate() method
+        # where it checks for llm_prompts and awards bonus points.
+        # This method just needs to verify the prompts meet the requirements.
+    
+        # Read the claim file
+        claim_path = self.student_code_path / "submissions" / "claim.json"
+        if not claim_path.exists():
+            return False
+        try:
+            with open(claim_path, 'r') as f:
+                claims = json.load(f)
+        except json.JSONDecodeError:
+            return False
+    
+        # Get LLM prompts
+        llm_prompts = claims.get("llm_prompts", [])
+    
+        # Check if we have at least 5 prompts
+        if len(llm_prompts) < 5:
+            return False
+    
+        # Validate each prompt has required fields
+        valid_prompts = 0
+        for prompt in llm_prompts:
+            if isinstance(prompt, dict):
+            # Check for required fields
+                has_purpose = bool(prompt.get("purpose", "").strip())
+                has_prompt = bool(prompt.get("prompt", "").strip())
+                has_model = bool(prompt.get("model", "").strip())
+                has_helpful = "helpful" in prompt  # Can be true or false
+            
+                if has_purpose and has_prompt and has_model and has_helpful:
+                    # Additional validation: prompt should be substantive (not too short)
+                    if len(prompt["prompt"]) >= 20:  # At least 20 characters
+                        valid_prompts += 1
+    
+        # Require at least 5 valid prompts
+        return valid_prompts >= 5
+
     def validate_new_card(self, milestone_id, milestone):
         """Validate new card implementation"""
         card_name = milestone["card_name"]
