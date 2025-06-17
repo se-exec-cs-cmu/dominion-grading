@@ -18,7 +18,7 @@
     "type": "bug_fix",
     "points": 10,
     "success_message": "String formatting in pick_cards_from_list is now working correctly!",
-    "failure_hint": "Check the f-string formatting in the controller's pick_cards_from_list method"
+    "failure_hint": "Check f-string formatting in the controller methods for picking cards from list. Also, is the logic correct?"
   },
   "test_coverage_player": {
     "name": "Player Module Test Coverage",
