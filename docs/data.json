@@ -85,11 +85,8 @@
       "lastSubmission": "2025-06-17T03:03:40.283916"
     },
     "claire-test-submission": {
-      "totalPoints": 35,
-      "completedMilestones": [
-        "bug_estate_supply",
-        "bug_controller_params"
-      ],
+      "totalPoints": 0,
+      "completedMilestones": [],
       "submissions": [
         {
           "timestamp": "2025-06-17T12:09:44-04:00",
@@ -120,12 +117,18 @@
           "points": 35,
           "passed": 2,
           "failed": 2
+        },
+        {
+          "timestamp": "2025-06-17T12:58:25-04:00",
+          "points": 0,
+          "passed": 0,
+          "failed": 1
         }
       ],
-      "lastSubmission": "2025-06-17T12:48:05-04:00"
+      "lastSubmission": "2025-06-17T12:58:25-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T16:48:50.455905",
+  "lastUpdate": "2025-06-17T16:59:10.235359",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
