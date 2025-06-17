@@ -77,7 +77,38 @@ jobs:
         head -c 500 results.json || echo "No results.json file"
         echo -e "\n=== Any errors ==="
         cat validation_errors.log 2>/dev/null || echo "No errors logged"
-    
+
+    - name: Debug - Show results.json contents
+      if: always()
+      run: |
+        echo "=== Checking if results.json exists ==="
+        if [ -f results.json ]; then
+          echo "File exists"
+          echo "File size: $(stat -c%s results.json 2>/dev/null || stat -f%z results.json) bytes"
+          echo ""
+          echo "=== File contents (with cat) ==="
+          cat results.json || echo "Cat failed"
+          echo ""
+          echo "=== File contents (with hexdump - first 200 bytes) ==="
+          hexdump -C results.json | head -10 || echo "Hexdump failed"
+          echo ""
+          echo "=== Checking if file is valid JSON ==="
+          python3 -m json.tool results.json || echo "Not valid JSON"
+        else
+          echo "results.json does NOT exist!"
+        fi
+        
+        echo ""
+        echo "=== All files in current directory ==="
+        ls -la
+        
+        echo ""
+        echo "=== Checking validation error log ==="
+        if [ -f validation_errors.log ]; then
+          echo "Error log contents:"
+          cat validation_errors.log
+        fi
+        
     - name: Update dashboard
       if: always()
       run: |
