@@ -56,6 +56,9 @@ function updateDashboard() {
     // Update milestone grid
     updateMilestoneGrid();
     
+    // Update custom milestones section (NEW)
+    updateCustomMilestones();
+    
     // Update charts
     updateCharts(teams);
 }
@@ -89,14 +92,24 @@ function updateLeaderboard(teams) {
         // Milestones completed
         row.insertCell(3).textContent = teamData.completedMilestones.length;
         
-        // Last activity
+        // Custom achievements column (NEW)
+        const customCell = row.insertCell(4);
+        const customCount = teamData.customMilestones ? teamData.customMilestones.length : 0;
+        if (customCount > 0) {
+            customCell.innerHTML = `⭐ ${customCount}`;
+            customCell.title = "Custom achievements";
+        } else {
+            customCell.textContent = '-';
+        }
+        
+        // Last activity (now column 5)
         const lastActivity = teamData.lastSubmission ? 
             new Date(teamData.lastSubmission).toLocaleString() : 
             'No activity';
-        row.insertCell(4).textContent = lastActivity;
+        row.insertCell(5).textContent = lastActivity;
         
-        // Trend (if they have multiple submissions)
-        const trendCell = row.insertCell(5);
+        // Trend (now column 6)
+        const trendCell = row.insertCell(6);
         if (teamData.submissions && teamData.submissions.length > 1) {
             const recent = teamData.submissions.slice(-2);
             const pointsGained = recent[1].points - recent[0].points;
@@ -126,6 +139,10 @@ function updateActivityFeed() {
     recentEvents.forEach(event => {
         const div = document.createElement('div');
         div.className = 'activity-item';
+        // Add special class for custom achievements (UPDATED)
+        if (event.type === 'custom') {
+            div.classList.add('custom-achievement');
+        }
         
         const time = new Date(event.timestamp).toLocaleTimeString();
         const points = event.points ? `(+${event.points} pts)` : '';
@@ -183,6 +200,46 @@ function updateMilestoneGrid() {
         `;
         
         grid.appendChild(div);
+    });
+}
+
+// NEW FUNCTION: Update custom milestones section
+function updateCustomMilestones() {
+    const container = document.getElementById('customMilestonesContainer');
+    if (!container) return; // Skip if element doesn't exist
+    
+    container.innerHTML = '';
+    
+    const customMilestones = dashboardData.customMilestones || {};
+    const customArray = Object.values(customMilestones);
+    
+    if (customArray.length === 0) {
+        container.innerHTML = '<p class="no-custom">No custom achievements yet. Be creative!</p>';
+        return;
+    }
+    
+    // Sort by timestamp (newest first)
+    customArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    // Show recent custom achievements
+    const recentCustom = customArray.slice(0, 10);
+    
+    recentCustom.forEach(custom => {
+        const div = document.createElement('div');
+        div.className = 'custom-milestone-item';
+        
+        const time = new Date(custom.timestamp).toLocaleDateString();
+        
+        div.innerHTML = `
+            <div class="custom-header">
+                <span class="custom-team">⭐ ${custom.team}</span>
+                <span class="custom-date">${time}</span>
+            </div>
+            <h4>${custom.name}</h4>
+            <p class="custom-description">${custom.description}</p>
+        `;
+        
+        container.appendChild(div);
     });
 }
 

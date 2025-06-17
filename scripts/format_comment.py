@@ -35,6 +35,14 @@ def format_comment(results_file, template_file):
     else:
         failed_text = "- Great job! All claimed milestones passed!"
     
+    # Format custom milestones section
+    custom_text = ""
+    if results.get("customMilestones"):
+        custom_text = "\n### ⭐ Custom Achievements\n\n"
+        for custom in results["customMilestones"]:
+            custom_text += f"- ⭐ **{custom['name']}** ({custom['points']} point)\n"
+            custom_text += f"  - {custom['description']}\n"
+    
     # Format LLM bonus section
     llm_bonus_text = ""
     if results.get("llmBonus", 0) > 0:
@@ -52,6 +60,7 @@ def format_comment(results_file, template_file):
     comment = comment.replace("{{TOTAL_POINTS}}", str(results.get("totalPoints", 0)))
     comment = comment.replace("{{PASSED_MILESTONES}}", passed_text.strip())
     comment = comment.replace("{{FAILED_MILESTONES}}", failed_text.strip())
+    comment = comment.replace("{{CUSTOM_ACHIEVEMENTS}}", custom_text)
     comment = comment.replace("{{LLM_BONUS}}", llm_bonus_text)
     comment = comment.replace("{{TIMESTAMP}}", formatted_time)
     

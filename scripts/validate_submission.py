@@ -72,7 +72,20 @@ class MilestoneValidator:
                     "name": f"Unknown milestone: {milestone_id}",
                     "hint": "This milestone ID doesn't exist"
                 })
-                
+            custom_milestones = claims.get("custom_milestones", [])
+        self.results["customMilestones"] = []
+    
+        for custom in custom_milestones:
+            if self.validate_custom_milestone(custom):
+                self.results["customMilestones"].append({
+                    "id": custom.get("id", "custom"),
+                    "name": custom.get("name", "Custom Milestone"),
+                    "description": custom.get("description", ""),
+                    "points": 1,  # Each custom milestone is worth 1 point
+                    "starred": True  # Mark as special achievement
+                })
+                self.results["totalPoints"] += 1
+        
         # Output ONLY the JSON results
         print(json.dumps(self.results, indent=2))
     
