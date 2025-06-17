@@ -1,7 +1,7 @@
 {
   "teams": {
     "claire-test-submission": {
-      "totalPoints": 103,
+      "totalPoints": 102,
       "completedMilestones": [
         "bug_estate_supply",
         "llm_prompt_log",
@@ -52,12 +52,23 @@
           "points": 103,
           "passed": 5,
           "failed": 1
+        },
+        {
+          "timestamp": "2025-06-17T16:45:36-04:00",
+          "points": 102,
+          "passed": 5,
+          "failed": 1,
+          "custom": 2
         }
       ],
-      "lastSubmission": "2025-06-17T16:36:45-04:00"
+      "lastSubmission": "2025-06-17T16:45:36-04:00",
+      "customMilestones": [
+        "add_type_hints",
+        "implement_throne_room"
+      ]
     }
   },
-  "lastUpdate": "2025-06-17T20:37:30.146966",
+  "lastUpdate": "2025-06-17T20:46:21.214796",
   "milestoneStats": {
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
@@ -103,6 +114,55 @@
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed LLM Prompt Documentation",
+      "points": 10,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Laboratory Card Implementation",
+      "points": 25,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Gardens Card Implementation",
+      "points": 30,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "\u2b50 Custom: Added Type Hints Throughout",
+      "points": 1,
+      "type": "custom"
+    },
+    {
+      "timestamp": "2025-06-17T16:45:36-04:00",
+      "team": "claire-test-submission",
+      "event": "\u2b50 Custom: Implemented Throne Room Card",
+      "points": 1,
+      "type": "custom"
+    },
     {
       "timestamp": "2025-06-17T16:36:45-04:00",
       "team": "claire-test-submission",
@@ -223,5 +283,23 @@
       "event": "Completed Estate Supply Bug Fix",
       "points": 20
     }
-  ]
+  ],
+  "customMilestones": {
+    "claire-test-submission_add_type_hints": {
+      "team": "claire-test-submission",
+      "id": "add_type_hints",
+      "name": "Added Type Hints Throughout",
+      "description": "Added comprehensive type hints to all methods in the dominion package, improving code readability and enabling better IDE support.",
+      "points": 1,
+      "timestamp": "2025-06-17T16:45:36-04:00"
+    },
+    "claire-test-submission_implement_throne_room": {
+      "team": "claire-test-submission",
+      "id": "implement_throne_room",
+      "name": "Implemented Throne Room Card",
+      "description": "Added the Throne Room action card that lets you play an action card twice. Includes tests and handles edge cases.",
+      "points": 1,
+      "timestamp": "2025-06-17T16:45:36-04:00"
+    }
+  }
 }
