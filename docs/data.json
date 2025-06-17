@@ -1,10 +1,11 @@
 {
   "teams": {
     "claire-test-submission": {
-      "totalPoints": 35,
+      "totalPoints": 45,
       "completedMilestones": [
         "bug_controller_params",
-        "bug_estate_supply"
+        "bug_estate_supply",
+        "bug_prompt_formatting"
       ],
       "submissions": [
         {
@@ -12,12 +13,18 @@
           "points": 35,
           "passed": 2,
           "failed": 2
+        },
+        {
+          "timestamp": "2025-06-17T14:20:56-04:00",
+          "points": 45,
+          "passed": 3,
+          "failed": 1
         }
       ],
-      "lastSubmission": "2025-06-17T14:00:19-04:00"
+      "lastSubmission": "2025-06-17T14:20:56-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T18:01:16.560224",
+  "lastUpdate": "2025-06-17T18:21:45.365203",
   "milestoneStats": {
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
@@ -32,9 +39,34 @@
       "completedBy": [
         "claire-test-submission"
       ]
+    },
+    "bug_prompt_formatting": {
+      "name": "Prompt Formatting Bug",
+      "points": 10,
+      "completedBy": [
+        "claire-test-submission"
+      ]
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T14:20:56-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15
+    },
+    {
+      "timestamp": "2025-06-17T14:20:56-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
+    },
+    {
+      "timestamp": "2025-06-17T14:20:56-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Prompt Formatting Bug",
+      "points": 10
+    },
     {
       "timestamp": "2025-06-17T14:00:19-04:00",
       "team": "claire-test-submission",
