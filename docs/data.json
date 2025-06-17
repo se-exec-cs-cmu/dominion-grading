@@ -1,8 +1,14 @@
 {
   "teams": {
     "claire-test-submission": {
-      "totalPoints": 0,
-      "completedMilestones": [],
+      "totalPoints": 103,
+      "completedMilestones": [
+        "bug_estate_supply",
+        "llm_prompt_log",
+        "bug_controller_params",
+        "card_laboratory",
+        "card_gardens"
+      ],
       "submissions": [
         {
           "timestamp": "2025-06-17T14:00:19-04:00",
@@ -40,12 +46,18 @@
           "passed": 0,
           "failed": 0,
           "error": "'MilestoneValidator' object has no attribute 'validate_custom_milestone'"
+        },
+        {
+          "timestamp": "2025-06-17T16:36:45-04:00",
+          "points": 103,
+          "passed": 5,
+          "failed": 1
         }
       ],
-      "lastSubmission": "2025-06-17T16:28:34-04:00"
+      "lastSubmission": "2025-06-17T16:36:45-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T20:33:26.614631",
+  "lastUpdate": "2025-06-17T20:37:30.146966",
   "milestoneStats": {
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
@@ -81,9 +93,46 @@
       "completedBy": [
         "claire-test-submission"
       ]
+    },
+    "card_gardens": {
+      "name": "Gardens Card Implementation",
+      "points": 30,
+      "completedBy": [
+        "claire-test-submission"
+      ]
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T16:36:45-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
+    },
+    {
+      "timestamp": "2025-06-17T16:36:45-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed LLM Prompt Documentation",
+      "points": 10
+    },
+    {
+      "timestamp": "2025-06-17T16:36:45-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15
+    },
+    {
+      "timestamp": "2025-06-17T16:36:45-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Laboratory Card Implementation",
+      "points": 25
+    },
+    {
+      "timestamp": "2025-06-17T16:36:45-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Gardens Card Implementation",
+      "points": 30
+    },
     {
       "timestamp": "2025-06-17T16:28:34-04:00",
       "team": "claire-test-submission",
