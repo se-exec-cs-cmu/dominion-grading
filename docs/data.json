@@ -85,9 +85,10 @@
       "lastSubmission": "2025-06-17T03:03:40.283916"
     },
     "claire-test-submission": {
-      "totalPoints": 20,
+      "totalPoints": 35,
       "completedMilestones": [
-        "bug_estate_supply"
+        "bug_estate_supply",
+        "bug_controller_params"
       ],
       "submissions": [
         {
@@ -101,18 +102,31 @@
           "points": 20,
           "passed": 1,
           "failed": 1
+        },
+        {
+          "timestamp": "2025-06-17T12:29:56-04:00",
+          "points": 35,
+          "passed": 2,
+          "failed": 0
         }
       ],
-      "lastSubmission": "2025-06-17T12:17:08-04:00"
+      "lastSubmission": "2025-06-17T12:29:56-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T16:17:49.526911",
+  "lastUpdate": "2025-06-17T16:30:41.831416",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
       "points": 20,
       "completedBy": [
         "test-team",
+        "claire-test-submission"
+      ]
+    },
+    "bug_controller_params": {
+      "name": "Controller Parameter Bug",
+      "points": 15,
+      "completedBy": [
         "claire-test-submission"
       ]
     }
@@ -123,6 +137,18 @@
       "team": "unknown",
       "event": "Submission failed - see logs",
       "points": 0
+    },
+    {
+      "timestamp": "2025-06-17T12:29:56-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
+    },
+    {
+      "timestamp": "2025-06-17T12:29:56-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15
     },
     {
       "timestamp": "2025-06-17T12:17:08-04:00",
