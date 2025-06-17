@@ -1,13 +1,8 @@
 {
   "teams": {
     "claire-test-submission": {
-      "totalPoints": 70,
-      "completedMilestones": [
-        "bug_estate_supply",
-        "llm_prompt_log",
-        "bug_controller_params",
-        "card_laboratory"
-      ],
+      "totalPoints": 0,
+      "completedMilestones": [],
       "submissions": [
         {
           "timestamp": "2025-06-17T14:00:19-04:00",
@@ -38,12 +33,19 @@
           "points": 70,
           "passed": 4,
           "failed": 0
+        },
+        {
+          "timestamp": "2025-06-17T16:28:34-04:00",
+          "points": 0,
+          "passed": 0,
+          "failed": 0,
+          "error": "'MilestoneValidator' object has no attribute 'validate_custom_milestone'"
         }
       ],
-      "lastSubmission": "2025-06-17T15:22:53-04:00"
+      "lastSubmission": "2025-06-17T16:28:34-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T19:23:51.592800",
+  "lastUpdate": "2025-06-17T20:33:26.614631",
   "milestoneStats": {
     "bug_controller_params": {
       "name": "Controller Parameter Bug",
@@ -82,6 +84,12 @@
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T16:28:34-04:00",
+      "team": "claire-test-submission",
+      "event": "Submission failed - see logs",
+      "points": 0
+    },
     {
       "timestamp": "2025-06-17T15:22:53-04:00",
       "team": "claire-test-submission",
