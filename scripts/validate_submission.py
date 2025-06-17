@@ -13,16 +13,18 @@ import argparse
 from datetime import datetime
 
 class MilestoneValidator:
-    def __init__(self, student_code_path, team, repository, sha):
+    def __init__(self, student_code_path, team, repository, sha, timestamp=None):
         self.student_code_path = Path(student_code_path)
         self.team = team
         self.repository = repository
         self.sha = sha
+        # Use provided timestamp or current time as fallback
+        self.timestamp = timestamp or datetime.now().isoformat()
         self.results = {
             "team": team,
             "repository": repository,
             "sha": sha,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": self.timestamp,
             "totalPoints": 0,
             "passed": [],
             "failed": [],
@@ -30,7 +32,7 @@ class MilestoneValidator:
             "llmPromptsCount": 0
         }
         
-        # Fix: Get the script's directory and find milestones relative to it
+        # Get the script's directory and find milestones relative to it
         script_dir = Path(__file__).parent.absolute()
         repo_root = script_dir.parent  # Go up from scripts/ to repo root
         milestone_file = repo_root / "milestones" / "definitions.json"
@@ -78,6 +80,7 @@ class MilestoneValidator:
             self.results["llmBonus"] = 10
             self.results["totalPoints"] += 10
         
+        # Output ONLY the JSON results
         print(json.dumps(self.results, indent=2))
     
     def validate_milestone(self, milestone_id):
@@ -121,7 +124,7 @@ class MilestoneValidator:
     
     def validate_bug_fix(self, milestone_id, milestone):
         """Run bug fix tests"""
-        # Fix: Get proper path to test files
+        # Get proper path to test files
         script_dir = Path(__file__).parent.absolute()
         repo_root = script_dir.parent
         test_file = repo_root / "tests" / "bugs" / f"test_{milestone_id}.py"
@@ -182,7 +185,7 @@ class MilestoneValidator:
                 coverage_cmd = ["python", "-m", "coverage", "run", "-m", "pytest", f"tests/test_{module}.py"]
                 report_cmd = ["python", "-m", "coverage", "report", "--include", f"dominion/{module}.py"]
             
-            # Run coverage
+            # Run coverage (suppress output)
             subprocess.run(coverage_cmd, capture_output=True)
             result = subprocess.run(report_cmd, capture_output=True, text=True)
             
@@ -204,7 +207,7 @@ class MilestoneValidator:
         """Validate new card implementation"""
         card_name = milestone["card_name"]
         
-        # Fix: Get proper path to test files
+        # Get proper path to test files
         script_dir = Path(__file__).parent.absolute()
         repo_root = script_dir.parent
         test_file = repo_root / "tests" / "cards" / f"test_{card_name.lower()}.py"
@@ -232,6 +235,7 @@ sys.path.insert(0, '{tmpdir}')
 from dominion.card import Card
 try:
     card_type = Card.get_type_with_name('{card_name}')
+    # Silent success - no output
 except:
     sys.exit(1)
 """
@@ -263,6 +267,7 @@ if __name__ == "__main__":
     parser.add_argument("--team", required=True)
     parser.add_argument("--sha", required=True)
     parser.add_argument("--student-code", required=True)
+    parser.add_argument("--timestamp", required=False, default=None)
     args = parser.parse_args()
     
     try:
@@ -270,7 +275,8 @@ if __name__ == "__main__":
             args.student_code,
             args.team,
             args.repo,
-            args.sha
+            args.sha,
+            args.timestamp
         )
         validator.validate()
     except Exception as e:
@@ -279,7 +285,7 @@ if __name__ == "__main__":
             "team": args.team,
             "repository": args.repo,
             "sha": args.sha,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": args.timestamp or datetime.now().isoformat(),
             "totalPoints": 0,
             "passed": [],
             "failed": [],

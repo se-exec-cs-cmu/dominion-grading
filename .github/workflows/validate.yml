@@ -42,6 +42,14 @@ jobs:
         echo "Starting validation..."
         
         # Ensure we capture output even if script fails
+        poetry run python scripts/validate_submission.py \
+          --repo "${{ github.event.client_payload.repository }}" \
+          --team "${{ github.event.client_payload.team }}" \
+          --sha "${{ github.event.client_payload.sha }}" \
+          --timestamp "${{ github.event.client_payload.timestamp }}" \
+          --student-code ./student-code \
+          > results.json 2>validation_errors.log; then
+
         if poetry run python scripts/validate_submission.py \
           --repo "${{ github.event.client_payload.repository }}" \
           --team "${{ github.event.client_payload.team }}" \
