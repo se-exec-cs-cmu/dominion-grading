@@ -39,12 +39,19 @@
           "passed": 0,
           "failed": 0,
           "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "timestamp": "2025-06-17T02:24:06.200505",
+          "points": 0,
+          "passed": 0,
+          "failed": 0,
+          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
         }
       ],
-      "lastSubmission": "2025-06-17T02:18:59.647128"
+      "lastSubmission": "2025-06-17T02:24:06.200505"
     }
   },
-  "lastUpdate": "2025-06-17T02:18:59.647223",
+  "lastUpdate": "2025-06-17T02:24:06.200599",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
@@ -55,6 +62,12 @@
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T02:24:06.200505",
+      "team": "unknown",
+      "event": "Submission failed - see logs",
+      "points": 0
+    },
     {
       "timestamp": "2025-06-17T02:18:59.647128",
       "team": "unknown",
