@@ -110,6 +110,62 @@ jobs:
           cat validation_errors.log
         fi
         
+    - name: Format comment from results
+      id: format-comment
+      run: |
+        poetry run python scripts/format_comment.py \
+          --results results.json \
+          --template templates/comment_template.md \
+          > comment.md
+
+        # Save comment to environment
+        echo 'COMMENT_BODY<<EOF' >> $GITHUB_ENV
+        cat comment.md >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+
+    - name: Post results to student repository
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
+        script: |
+          // Find or create the submission results issue
+          const owner = '${{ github.event.client_payload.repository }}'.split('/')[0];
+          const repo = '${{ github.event.client_payload.repository }}'.split('/')[1];
+          
+          // Search for existing issue
+          const issues = await github.rest.issues.listForRepo({
+            owner: owner,
+            repo: repo,
+            state: 'open',
+            labels: 'submission-results'
+          });
+          
+          let issueNumber;
+          
+          if (issues.data.length === 0) {
+            // Create new issue
+            const newIssue = await github.rest.issues.create({
+              owner: owner,
+              repo: repo,
+              title: 'Submission Results',
+              body: 'This issue tracks your submission validation results. Each time you push a claim.json file, results will appear here as a comment.',
+              labels: ['submission-results']
+            });
+            issueNumber = newIssue.data.number;
+          } else {
+            issueNumber = issues.data[0].number;
+          }
+          
+          // Post comment with results
+          await github.rest.issues.createComment({
+            owner: owner,
+            repo: repo,
+            issue_number: issueNumber,
+            body: process.env.COMMENT_BODY
+          });
+          
+          console.log(`Posted results to ${owner}/${repo}#${issueNumber}`);
+
     - name: Update dashboard
       if: always()
       run: |
