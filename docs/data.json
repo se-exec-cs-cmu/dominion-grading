@@ -1,6 +1,51 @@
 {
-  "teams": {},
-  "lastUpdate": null,
-  "milestoneStats": {},
-  "timeline": []
+  "teams": {
+    "claire-test-submission": {
+      "totalPoints": 35,
+      "completedMilestones": [
+        "bug_controller_params",
+        "bug_estate_supply"
+      ],
+      "submissions": [
+        {
+          "timestamp": "2025-06-17T14:00:19-04:00",
+          "points": 35,
+          "passed": 2,
+          "failed": 2
+        }
+      ],
+      "lastSubmission": "2025-06-17T14:00:19-04:00"
+    }
+  },
+  "lastUpdate": "2025-06-17T18:01:16.560224",
+  "milestoneStats": {
+    "bug_controller_params": {
+      "name": "Controller Parameter Bug",
+      "points": 15,
+      "completedBy": [
+        "claire-test-submission"
+      ]
+    },
+    "bug_estate_supply": {
+      "name": "Estate Supply Bug Fix",
+      "points": 20,
+      "completedBy": [
+        "claire-test-submission"
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "timestamp": "2025-06-17T14:00:19-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Controller Parameter Bug",
+      "points": 15
+    },
+    {
+      "timestamp": "2025-06-17T14:00:19-04:00",
+      "team": "claire-test-submission",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20
+    }
+  ]
 }
