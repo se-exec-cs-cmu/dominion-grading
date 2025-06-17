@@ -31,6 +31,7 @@ def update_dashboard(results_file, output_file):
                 if not content.strip():
                     raise json.JSONDecodeError("Empty file", "", 0)
                 new_results = json.loads(content)
+                print(f"Loaded results for team: {new_results.get('team', 'unknown')}")
         except json.JSONDecodeError as e:
             print(f"Error: Invalid JSON in results file: {e}")
             new_results = {

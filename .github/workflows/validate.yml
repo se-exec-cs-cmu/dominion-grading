@@ -39,128 +39,45 @@ jobs:
     - name: Validate submission
       id: validate
       run: |
-        poetry run python scripts/validate_submission.py \
+        echo "Starting validation..."
+        
+        # Ensure we capture output even if script fails
+        if poetry run python scripts/validate_submission.py \
           --repo "${{ github.event.client_payload.repository }}" \
           --team "${{ github.event.client_payload.team }}" \
           --sha "${{ github.event.client_payload.sha }}" \
           --student-code ./student-code \
-          > results.json
-    
-    - name: Post results to student repo
-      if: always()
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.WORKSHOP_BOT_TOKEN }}
-        script: |
-          const fs = require('fs');
-          let results;
+          > results.json 2>validation_errors.log; then
           
-          try {
-            const content = fs.readFileSync('results.json', 'utf8');
-            results = JSON.parse(content);
-          } catch (error) {
-            console.error('Failed to read results:', error);
-            results = {
-              team: '${{ github.event.client_payload.team }}',
-              error: 'Failed to parse validation results',
-              totalPoints: 0,
-              passed: [],
-              failed: []
-            };
-          }
+          echo "Validation completed successfully"
+        else
+          EXIT_CODE=$?
+          echo "Validation script failed with exit code $EXIT_CODE"
           
-          // Build comment text
-          let comment = `## 🎯 Validation Results\n\n`;
-          comment += `**Team:** ${results.team}\n`;
-          comment += `**Total Points:** ${results.totalPoints} 🏆\n\n`;
-          
-          if (results.passed && results.passed.length > 0) {
-            comment += `### ✅ Passed Milestones\n\n`;
-            results.passed.forEach(m => {
-              comment += `- **${m.name}** (+${m.points} pts): ${m.message}\n`;
-            });
-            comment += '\n';
-          }
-          
-          if (results.failed && results.failed.length > 0) {
-            comment += `### ❌ Failed Milestones\n\n`;
-            results.failed.forEach(m => {
-              comment += `- **${m.name}**: ${m.hint}\n`;
-            });
-            comment += '\n';
-          }
-          
-          if (results.llmBonus && results.llmBonus > 0) {
-            comment += `### 🤖 LLM Usage Bonus\n`;
-            comment += `+${results.llmBonus} points for documenting ${results.llmPromptsCount} prompts!\n\n`;
-          }
-          
-          comment += `---\n`;
-          comment += `*Validated at: ${new Date().toISOString()}*\n`;
-          comment += `*Check the [Leaderboard](https://se-exec-cs-cmu.github.io/dominion-grading/) for current standings!*`;
-          
-          // Parse repository info
-          const [owner, repo] = '${{ github.event.client_payload.repository }}'.split('/');
-          
-          console.log(`Posting to ${owner}/${repo}`);
-          
-          // Find the submissions issue
-          try {
-            const issues = await github.rest.issues.listForRepo({
-              owner: owner,
-              repo: repo,
-              state: 'open',
-              labels: 'submissions'
-            });
-            
-            console.log(`Found ${issues.data.length} submission issues`);
-            
-            if (issues.data.length > 0) {
-              // Post to existing issue
-              const issueNumber = issues.data[0].number;
-              console.log(`Posting comment to issue #${issueNumber}`);
-              
-              await github.rest.issues.createComment({
-                owner: owner,
-                repo: repo,
-                issue_number: issueNumber,
-                body: comment
-              });
-              
-              console.log('Comment posted successfully');
-            } else {
-              // Create new issue
-              console.log('No submissions issue found, creating one');
-              
-              const newIssue = await github.rest.issues.create({
-                owner: owner,
-                repo: repo,
-                title: 'Submission Results',
-                body: 'This issue tracks validation results for your submissions.\n\n' + comment,
-                labels: ['submissions']
-              });
-              
-              console.log(`Created new issue #${newIssue.data.number}`);
-            }
-          } catch (error) {
-            console.error('Failed to post comment:', error);
-            console.error('Error details:', error.message);
-            
-            // Try posting as commit comment as fallback
-            console.log('Attempting to post as commit comment instead');
-            try {
-              await github.rest.repos.createCommitComment({
-                owner: owner,
-                repo: repo,
-                commit_sha: '${{ github.event.client_payload.sha }}',
-                body: comment
-              });
-              console.log('Posted as commit comment');
-            } catch (commitError) {
-              console.error('Failed to post commit comment:', commitError);
-            }
-          }
+          # Check if any output was produced
+          if [ ! -s results.json ]; then
+            echo "No output from validation script, creating error result"
+            cat > results.json << EOF
+        {
+          "team": "${{ github.event.client_payload.team }}",
+          "repository": "${{ github.event.client_payload.repository }}",
+          "sha": "${{ github.event.client_payload.sha }}",
+          "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "totalPoints": 0,
+          "passed": [],
+          "failed": [],
+          "error": "Validation script failed - check logs for details"
+        }
+        EOF
+          fi
+        fi
         
+        # Always show what we got
+        echo "=== Results file (first 500 chars) ==="
+        head -c 500 results.json || echo "No results.json file"
+        echo -e "\n=== Any errors ==="
+        cat validation_errors.log 2>/dev/null || echo "No errors logged"
+    
     - name: Update dashboard
       if: always()
       run: |
