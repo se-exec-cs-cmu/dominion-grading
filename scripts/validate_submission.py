@@ -35,8 +35,6 @@ class MilestoneValidator:
         repo_root = script_dir.parent  # Go up from scripts/ to repo root
         milestone_file = repo_root / "milestones" / "definitions.json"
         
-        print(f"Looking for milestone definitions at: {milestone_file}")
-        
         # Load milestone definitions
         if not milestone_file.exists():
             raise FileNotFoundError(f"Milestone definitions not found at {milestone_file}")
@@ -234,9 +232,7 @@ sys.path.insert(0, '{tmpdir}')
 from dominion.card import Card
 try:
     card_type = Card.get_type_with_name('{card_name}')
-    print('Card found')
 except:
-    print('Card not found')
     sys.exit(1)
 """
             
