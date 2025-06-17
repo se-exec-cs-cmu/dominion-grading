@@ -83,9 +83,22 @@
         }
       ],
       "lastSubmission": "2025-06-17T03:03:40.283916"
+    },
+    "claire-test-submission": {
+      "totalPoints": 0,
+      "completedMilestones": [],
+      "submissions": [
+        {
+          "timestamp": "2025-06-17T12:09:44-04:00",
+          "points": 0,
+          "passed": 0,
+          "failed": 2
+        }
+      ],
+      "lastSubmission": "2025-06-17T12:09:44-04:00"
     }
   },
-  "lastUpdate": "2025-06-17T16:06:27.442042",
+  "lastUpdate": "2025-06-17T16:10:36.036895",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
