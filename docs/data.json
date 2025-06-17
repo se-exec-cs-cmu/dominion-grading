@@ -2,7 +2,10 @@
   "teams": {
     "test-team": {
       "totalPoints": 100,
-      "completedMilestones": ["bug_estate_supply", "test_coverage_player"],
+      "completedMilestones": [
+        "bug_estate_supply",
+        "test_coverage_player"
+      ],
       "submissions": [
         {
           "timestamp": "2024-01-15T12:00:00Z",
@@ -18,17 +21,39 @@
         }
       ],
       "lastSubmission": "2024-01-15T13:00:00Z"
+    },
+    "unknown": {
+      "totalPoints": 0,
+      "completedMilestones": [],
+      "submissions": [
+        {
+          "timestamp": "2025-06-17T01:53:35.445747",
+          "points": 0,
+          "passed": 0,
+          "failed": 0,
+          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
+        }
+      ],
+      "lastSubmission": "2025-06-17T01:53:35.445747"
     }
   },
-  "lastUpdate": "2024-01-15T13:00:00Z",
+  "lastUpdate": "2025-06-17T01:53:35.445839",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
       "points": 20,
-      "completedBy": ["test-team"]
+      "completedBy": [
+        "test-team"
+      ]
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T01:53:35.445747",
+      "team": "unknown",
+      "event": "Submission failed - see logs",
+      "points": 0
+    },
     {
       "timestamp": "2024-01-15T13:00:00Z",
       "team": "test-team",
