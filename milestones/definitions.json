@@ -38,6 +38,14 @@
     "success_message": "Great test coverage for the Supply class!",
     "failure_hint": "Add more tests to tests/test_supply.py to reach 80% coverage"
   },
+  "test_coverage_overall": {
+    "name": "Overall Test Coverage",
+    "type": "test_coverage_overall",
+    "points": 25,
+    "threshold": 80,
+    "success_message": "Outstanding! You've achieved 80% test coverage across the entire project!",
+    "failure_hint": "Write more tests to reach 80% overall coverage. Run 'pytest --cov=dominion' to see which modules need more tests"
+  },
   "test_action_cards": {
     "name": "Action Card Tests",
     "type": "custom_test",

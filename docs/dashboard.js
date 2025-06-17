@@ -153,6 +153,7 @@ function updateMilestoneGrid() {
         'bug_prompt_formatting': { name: 'Prompt Formatting', points: 10 },
         'test_coverage_player': { name: 'Player Test Coverage', points: 15 },
         'test_coverage_supply': { name: 'Supply Test Coverage', points: 15 },
+        'test_coverage_overall': { name: 'Overall Test Coverage', points: 25 },
         'card_laboratory': { name: 'Laboratory Card', points: 25 },
         'card_gardens': { name: 'Gardens Card', points: 30 },
         'card_witch': { name: 'Witch Card', points: 40 }

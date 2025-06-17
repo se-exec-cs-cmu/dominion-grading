@@ -92,6 +92,8 @@ class MilestoneValidator:
                 success = self.validate_bug_fix(milestone_id, milestone)
             elif milestone["type"] == "test_coverage":
                 success = self.validate_test_coverage(milestone_id, milestone)
+            elif milestone["type"] == "test_coverage_overall":
+                success = self.validate_test_coverage_overall(milestone_id, milestone)
             elif milestone["type"] == "new_card":
                 success = self.validate_new_card(milestone_id, milestone)
             elif milestone["type"] == "custom_test":
@@ -200,6 +202,71 @@ class MilestoneValidator:
                             return coverage_percent >= threshold
                         except ValueError:
                             pass
+            
+            return False
+    
+    def validate_test_coverage_overall(self, milestone_id, milestone):
+        """Check overall test coverage for the entire dominion package"""
+        threshold = milestone["threshold"]
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            
+            # Copy student code and tests
+            shutil.copytree(self.student_code_path, tmpdir / "student")
+            
+            # Run coverage on entire test suite
+            os.chdir(tmpdir / "student")
+            
+            # Install student dependencies if they use poetry
+            if (tmpdir / "student" / "pyproject.toml").exists():
+                subprocess.run(["poetry", "install", "--no-interaction"], 
+                             capture_output=True)
+                coverage_cmd = ["poetry", "run", "coverage", "run", "-m", "pytest"]
+                report_cmd = ["poetry", "run", "coverage", "report", "--include", "dominion/*"]
+            else:
+                coverage_cmd = ["python", "-m", "coverage", "run", "-m", "pytest"]
+                report_cmd = ["python", "-m", "coverage", "report", "--include", "dominion/*"]
+            
+            # Run all tests with coverage
+            result = subprocess.run(coverage_cmd, capture_output=True, text=True)
+            
+            # If tests fail, we still want to check coverage
+            # (some tests might fail due to incomplete implementation)
+            
+            # Get coverage report
+            result = subprocess.run(report_cmd, capture_output=True, text=True)
+            
+            # Parse overall coverage from the TOTAL line
+            for line in result.stdout.split('\n'):
+                if line.startswith('TOTAL'):
+                    parts = line.split()
+                    if len(parts) >= 4:
+                        # The coverage percentage is usually the last column
+                        coverage_str = parts[-1].rstrip('%')
+                        try:
+                            coverage_percent = float(coverage_str)
+                            return coverage_percent >= threshold
+                        except ValueError:
+                            # Try parsing from a different position
+                            for part in reversed(parts):
+                                if '%' in part:
+                                    coverage_str = part.rstrip('%')
+                                    try:
+                                        coverage_percent = float(coverage_str)
+                                        return coverage_percent >= threshold
+                                    except ValueError:
+                                        continue
+            
+            # If we couldn't find the TOTAL line, try to get it from json output
+            json_cmd = report_cmd[:-2] + ["coverage", "json", "-o", "-"]
+            result = subprocess.run(json_cmd, capture_output=True, text=True)
+            try:
+                coverage_data = json.loads(result.stdout)
+                total_coverage = coverage_data.get("totals", {}).get("percent_covered", 0)
+                return total_coverage >= threshold
+            except:
+                pass
             
             return False
     
