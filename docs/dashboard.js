@@ -187,12 +187,20 @@ function updateMilestoneGrid() {
 
 function updateCharts(teams) {
     // Points over time chart
-    const pointsCtx = document.getElementById('pointsChart').getContext('2d');
+    const pointsCanvas = document.getElementById('pointsChart');
+    const pointsContainer = pointsCanvas.parentElement;
     
     // Destroy existing chart if it exists
     if (chartInstances.points) {
         chartInstances.points.destroy();
+        chartInstances.points = null;
     }
+    
+    // Reset canvas size to prevent growth
+    pointsCanvas.style.height = '300px';
+    pointsCanvas.style.width = '100%';
+    
+    const pointsCtx = pointsCanvas.getContext('2d');
     
     // Prepare data for points over time
     const datasets = teams.map(([teamName, teamData]) => {
@@ -216,7 +224,8 @@ function updateCharts(teams) {
         data: { datasets },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
+            aspectRatio: 2.5,
             plugins: {
                 title: {
                     display: false
@@ -244,11 +253,20 @@ function updateCharts(teams) {
     });
     
     // Milestone completion chart
-    const completionCtx = document.getElementById('completionChart').getContext('2d');
+    const completionCanvas = document.getElementById('completionChart');
+    const completionContainer = completionCanvas.parentElement;
     
+    // Destroy existing chart if it exists
     if (chartInstances.completion) {
         chartInstances.completion.destroy();
+        chartInstances.completion = null;
     }
+    
+    // Reset canvas size to prevent growth
+    completionCanvas.style.height = '300px';
+    completionCanvas.style.width = '100%';
+    
+    const completionCtx = completionCanvas.getContext('2d');
     
     const teamNames = teams.map(([name]) => name);
     const completedCounts = teams.map(([_, data]) => data.completedMilestones.length);
@@ -265,7 +283,8 @@ function updateCharts(teams) {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
+            aspectRatio: 2.5,
             plugins: {
                 legend: {
                     display: false
