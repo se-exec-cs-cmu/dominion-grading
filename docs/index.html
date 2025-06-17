@@ -11,8 +11,28 @@
     <div class="container">
         <header>
             <h1>🏰 Dominion Workshop Leaderboard</h1>
+            <p class="subtitle">Fix bugs, write tests, implement cards!</p>
             <p class="last-update">Last updated: <span id="lastUpdate">Loading...</span></p>
         </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Teams</h3>
+                <p class="stat-value" id="totalTeams">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Milestones Completed</h3>
+                <p class="stat-value" id="totalMilestones">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Points Awarded</h3>
+                <p class="stat-value" id="totalPoints">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Most Popular Milestone</h3>
+                <p class="stat-value" id="popularMilestone">-</p>
+            </div>
+        </section>
 
         <section class="leaderboard">
             <h2>Team Rankings</h2>
@@ -23,210 +43,43 @@
                         <th>Team</th>
                         <th>Points</th>
                         <th>Milestones</th>
-                        <th>Latest Achievement</th>
+                        <th>Last Activity</th>
+                        <th>Trend</th>
                     </tr>
                 </thead>
                 <tbody id="rankingsBody">
-                    <!-- Populated by JavaScript -->
                 </tbody>
             </table>
         </section>
 
-        <section class="milestones-progress">
-            <h2>Milestone Progress</h2>
-            <div class="milestone-grid" id="milestoneGrid">
-                <!-- Populated by JavaScript -->
+        <section class="timeline">
+            <h2>Recent Activity</h2>
+            <div id="activityFeed" class="activity-feed">
             </div>
         </section>
 
-        <section class="timeline">
-            <h2>Recent Activity</h2>
-            <div id="activityFeed">
-                <!-- Populated by JavaScript -->
+        <section class="milestones">
+            <h2>Milestone Completion</h2>
+            <div id="milestoneGrid" class="milestone-grid">
             </div>
         </section>
 
         <section class="charts">
             <div class="chart-container">
-                <canvas id="pointsChart"></canvas>
+                <h3>Points Over Time</h3>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="pointsChart"></canvas>
+                </div>
             </div>
             <div class="chart-container">
-                <canvas id="completionChart"></canvas>
+                <h3>Milestone Completion Rate</h3>
+                <div style="position: relative; height: 300px;">
+                    <canvas id="completionChart"></canvas>
+                </div>
             </div>
         </section>
     </div>
 
-    <script>
-        let refreshInterval;
-        
-        async function loadData() {
-            try {
-                const response = await fetch('data.json?t=' + Date.now());
-                const data = await response.json();
-                updateDashboard(data);
-            } catch (error) {
-                console.error('Failed to load data:', error);
-            }
-        }
-
-        function updateDashboard(data) {
-            // Update last update time
-            document.getElementById('lastUpdate').textContent = 
-                new Date(data.lastUpdate).toLocaleString();
-
-            // Update rankings table
-            const tbody = document.getElementById('rankingsBody');
-            tbody.innerHTML = '';
-            
-            data.teams.sort((a, b) => b.totalPoints - a.totalPoints);
-            
-            data.teams.forEach((team, index) => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td class="rank">${index + 1}</td>
-                    <td class="team-name">${team.name}</td>
-                    <td class="points">${team.totalPoints}</td>
-                    <td class="milestones">${team.completedMilestones.length} / ${data.totalMilestones}</td>
-                    <td class="latest">${team.latestAchievement || 'None yet'}</td>
-                `;
-                
-                if (index === 0) row.classList.add('first-place');
-                if (index === 1) row.classList.add('second-place');
-                if (index === 2) row.classList.add('third-place');
-            });
-
-            // Update milestone grid
-            const grid = document.getElementById('milestoneGrid');
-            grid.innerHTML = '';
-            
-            Object.entries(data.milestones).forEach(([id, milestone]) => {
-                const div = document.createElement('div');
-                div.className = 'milestone-card';
-                const completedBy = data.teams.filter(t => 
-                    t.completedMilestones.includes(id)
-                ).map(t => t.name);
-                
-                div.innerHTML = `
-                    <h3>${milestone.name}</h3>
-                    <p class="points">${milestone.points} pts</p>
-                    <p class="description">${milestone.description}</p>
-                    <div class="completed-by">
-                        ${completedBy.length > 0 
-                            ? `✅ ${completedBy.join(', ')}` 
-                            : '⏳ Unclaimed'}
-                    </div>
-                `;
-                
-                if (completedBy.length > 0) {
-                    div.classList.add('completed');
-                }
-                
-                grid.appendChild(div);
-            });
-
-            // Update activity feed
-            const feed = document.getElementById('activityFeed');
-            feed.innerHTML = '';
-            
-            data.recentActivity.slice(0, 10).forEach(activity => {
-                const div = document.createElement('div');
-                div.className = 'activity-item';
-                div.innerHTML = `
-                    <span class="time">${new Date(activity.timestamp).toLocaleTimeString()}</span>
-                    <span class="team">${activity.team}</span>
-                    <span class="achievement">${activity.message}</span>
-                `;
-                feed.appendChild(div);
-            });
-
-            // Update charts
-            updateCharts(data);
-        }
-
-        function updateCharts(data) {
-            // Points over time chart
-            const pointsCtx = document.getElementById('pointsChart').getContext('2d');
-            new Chart(pointsCtx, {
-                type: 'line',
-                data: {
-                    labels: data.timelineLabels,
-                    datasets: data.teams.map(team => ({
-                        label: team.name,
-                        data: team.pointsOverTime,
-                        borderColor: getTeamColor(team.name),
-                        fill: false
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Points Over Time'
-                        }
-                    }
-                }
-            });
-
-            // Milestone completion chart
-            const completionCtx = document.getElementById('completionChart').getContext('2d');
-            new Chart(completionCtx, {
-                type: 'bar',
-                data: {
-                    labels: data.teams.map(t => t.name),
-                    datasets: [{
-                        label: 'Completed Milestones',
-                        data: data.teams.map(t => t.completedMilestones.length),
-                        backgroundColor: data.teams.map(t => getTeamColor(t.name))
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Milestones Completed by Team'
-                        }
-                    }
-                }
-            });
-        }
-
-        function getTeamColor(teamName) {
-            const colors = {
-                'alpha': '#FF6B6B',
-                'beta': '#4ECDC4',
-                'gamma': '#45B7D1',
-                'delta': '#96CEB4',
-                'epsilon': '#FFEAA7'
-            };
-            return colors[teamName.toLowerCase()] || '#95A5A6';
-        }
-
-        // Auto-refresh every 30 seconds
-        function startAutoRefresh() {
-            refreshInterval = setInterval(loadData, 30000);
-        }
-
-        function stopAutoRefresh() {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-        }
-
-        // Initial load
-        loadData();
-        startAutoRefresh();
-
-        // Stop refresh when page is hidden
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                stopAutoRefresh();
-            } else {
-                loadData();
-                startAutoRefresh();
-            }
-        });
-    </script>
+    <script src="dashboard.js"></script>
 </body>
 </html>
