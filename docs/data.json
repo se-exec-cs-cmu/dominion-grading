@@ -1,6 +1,28 @@
 {
-  "teams": {},
-  "lastUpdate": null,
+  "teams": {
+    "unknown": {
+      "totalPoints": 0,
+      "completedMilestones": [],
+      "submissions": [
+        {
+          "timestamp": "2025-06-17T00:23:51.207727",
+          "points": 0,
+          "passed": 0,
+          "failed": 0,
+          "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
+        }
+      ],
+      "lastSubmission": "2025-06-17T00:23:51.207727"
+    }
+  },
+  "lastUpdate": "2025-06-17T00:23:51.207814",
   "milestoneStats": {},
-  "timeline": []
+  "timeline": [
+    {
+      "timestamp": "2025-06-17T00:23:51.207727",
+      "team": "unknown",
+      "event": "Submission failed - see logs",
+      "points": 0
+    }
+  ]
 }
