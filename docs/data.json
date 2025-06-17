@@ -60,9 +60,16 @@
           "passed": 0,
           "failed": 0,
           "error": "Invalid JSON in results file: Expecting value: line 1 column 1 (char 0)"
+        },
+        {
+          "timestamp": "2025-06-17T16:06:27.441937",
+          "points": 0,
+          "passed": 0,
+          "failed": 0,
+          "error": "Results file results.json not found"
         }
       ],
-      "lastSubmission": "2025-06-17T02:59:39.220511"
+      "lastSubmission": "2025-06-17T16:06:27.441937"
     },
     "fun-with-agents-dominion-with-a-twist-hari-test-submission": {
       "totalPoints": 0,
@@ -78,7 +85,7 @@
       "lastSubmission": "2025-06-17T03:03:40.283916"
     }
   },
-  "lastUpdate": "2025-06-17T03:03:42.347965",
+  "lastUpdate": "2025-06-17T16:06:27.442042",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug",
@@ -89,6 +96,12 @@
     }
   },
   "timeline": [
+    {
+      "timestamp": "2025-06-17T16:06:27.441937",
+      "team": "unknown",
+      "event": "Submission failed - see logs",
+      "points": 0
+    },
     {
       "timestamp": "2025-06-17T02:59:39.220511",
       "team": "unknown",
