@@ -27,9 +27,16 @@
           "passed": 1,
           "failed": 2,
           "custom": 0
+        },
+        {
+          "timestamp": "2025-06-18T01:40:24Z",
+          "points": 25,
+          "passed": 1,
+          "failed": 2,
+          "custom": 0
         }
       ],
-      "lastSubmission": "2025-06-18T01:29:37Z"
+      "lastSubmission": "2025-06-18T01:40:24Z"
     },
     "fun-with-agents-dominion-with-a-twist-room4": {
       "totalPoints": 35,
@@ -96,7 +103,7 @@
       "lastSubmission": "2025-06-18T01:36:20Z"
     }
   },
-  "lastUpdate": "2025-06-18T01:38:05.464454",
+  "lastUpdate": "2025-06-18T01:41:07.389123",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug Fix",
@@ -123,6 +130,13 @@
   },
   "customMilestones": {},
   "timeline": [
+    {
+      "timestamp": "2025-06-18T01:40:24Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room2",
+      "event": "Completed Laboratory Card Implementation",
+      "points": 25,
+      "type": "standard"
+    },
     {
       "timestamp": "2025-06-18T01:37:15Z",
       "team": "fun-with-agents-dominion-with-a-twist-room4",
