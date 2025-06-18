@@ -49,8 +49,10 @@
       "lastSubmission": "2025-06-18T01:14:19Z"
     },
     "fun-with-agents-dominion-with-a-twist-room1": {
-      "totalPoints": 0,
-      "completedMilestones": [],
+      "totalPoints": 20,
+      "completedMilestones": [
+        "bug_estate_supply"
+      ],
       "customMilestones": [],
       "submissions": [
         {
@@ -59,18 +61,26 @@
           "passed": 0,
           "failed": 2,
           "custom": 0
+        },
+        {
+          "timestamp": "2025-06-18T01:32:39Z",
+          "points": 20,
+          "passed": 1,
+          "failed": 1,
+          "custom": 0
         }
       ],
-      "lastSubmission": "2025-06-18T01:25:39Z"
+      "lastSubmission": "2025-06-18T01:32:39Z"
     }
   },
-  "lastUpdate": "2025-06-18T01:30:28.283100",
+  "lastUpdate": "2025-06-18T01:33:29.237449",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug Fix",
       "points": 20,
       "completedBy": [
-        "fun-with-agents-dominion-with-a-twist-room4"
+        "fun-with-agents-dominion-with-a-twist-room4",
+        "fun-with-agents-dominion-with-a-twist-room1"
       ]
     },
     "card_laboratory": {
@@ -83,6 +93,13 @@
   },
   "customMilestones": {},
   "timeline": [
+    {
+      "timestamp": "2025-06-18T01:32:39Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room1",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20,
+      "type": "standard"
+    },
     {
       "timestamp": "2025-06-18T01:29:37Z",
       "team": "fun-with-agents-dominion-with-a-twist-room2",
