@@ -14,10 +14,43 @@
         }
       ],
       "lastSubmission": "2025-06-18T01:12:40Z"
+    },
+    "fun-with-agents-dominion-with-a-twist-room4": {
+      "totalPoints": 20,
+      "completedMilestones": [
+        "bug_estate_supply"
+      ],
+      "customMilestones": [],
+      "submissions": [
+        {
+          "timestamp": "2025-06-18T01:14:19Z",
+          "points": 20,
+          "passed": 1,
+          "failed": 1,
+          "custom": 0
+        }
+      ],
+      "lastSubmission": "2025-06-18T01:14:19Z"
     }
   },
-  "lastUpdate": "2025-06-18T01:13:26.474926",
-  "milestoneStats": {},
+  "lastUpdate": "2025-06-18T01:15:07.781997",
+  "milestoneStats": {
+    "bug_estate_supply": {
+      "name": "Estate Supply Bug Fix",
+      "points": 20,
+      "completedBy": [
+        "fun-with-agents-dominion-with-a-twist-room4"
+      ]
+    }
+  },
   "customMilestones": {},
-  "timeline": []
+  "timeline": [
+    {
+      "timestamp": "2025-06-18T01:14:19Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room4",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20,
+      "type": "standard"
+    }
+  ]
 }
