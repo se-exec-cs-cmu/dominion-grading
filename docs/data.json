@@ -165,12 +165,19 @@
           "passed": 2,
           "failed": 1,
           "custom": 0
+        },
+        {
+          "timestamp": "2025-06-18T02:03:51Z",
+          "points": 35,
+          "passed": 2,
+          "failed": 1,
+          "custom": 0
         }
       ],
-      "lastSubmission": "2025-06-18T02:01:52Z"
+      "lastSubmission": "2025-06-18T02:03:51Z"
     }
   },
-  "lastUpdate": "2025-06-18T02:02:40.834286",
+  "lastUpdate": "2025-06-18T02:04:38.975111",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug Fix",
@@ -225,6 +232,20 @@
     {
       "timestamp": "2025-06-18T09:42:43+08:00",
       "team": "fun-with-agents-dominion-with-a-twist-room1",
+      "event": "Completed Player Module Test Coverage",
+      "points": 15,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-18T02:03:51Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room3",
+      "event": "Completed Estate Supply Bug Fix",
+      "points": 20,
+      "type": "standard"
+    },
+    {
+      "timestamp": "2025-06-18T02:03:51Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room3",
       "event": "Completed Player Module Test Coverage",
       "points": 15,
       "type": "standard"
