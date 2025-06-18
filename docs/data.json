@@ -1,8 +1,10 @@
 {
   "teams": {
     "fun-with-agents-dominion-with-a-twist-room2": {
-      "totalPoints": 0,
-      "completedMilestones": [],
+      "totalPoints": 25,
+      "completedMilestones": [
+        "card_laboratory"
+      ],
       "customMilestones": [],
       "submissions": [
         {
@@ -11,9 +13,16 @@
           "passed": 0,
           "failed": 2,
           "custom": 0
+        },
+        {
+          "timestamp": "2025-06-18T01:17:07Z",
+          "points": 25,
+          "passed": 1,
+          "failed": 2,
+          "custom": 0
         }
       ],
-      "lastSubmission": "2025-06-18T01:12:40Z"
+      "lastSubmission": "2025-06-18T01:17:07Z"
     },
     "fun-with-agents-dominion-with-a-twist-room4": {
       "totalPoints": 20,
@@ -33,7 +42,7 @@
       "lastSubmission": "2025-06-18T01:14:19Z"
     }
   },
-  "lastUpdate": "2025-06-18T01:15:07.781997",
+  "lastUpdate": "2025-06-18T01:17:49.343644",
   "milestoneStats": {
     "bug_estate_supply": {
       "name": "Estate Supply Bug Fix",
@@ -41,10 +50,24 @@
       "completedBy": [
         "fun-with-agents-dominion-with-a-twist-room4"
       ]
+    },
+    "card_laboratory": {
+      "name": "Laboratory Card Implementation",
+      "points": 25,
+      "completedBy": [
+        "fun-with-agents-dominion-with-a-twist-room2"
+      ]
     }
   },
   "customMilestones": {},
   "timeline": [
+    {
+      "timestamp": "2025-06-18T01:17:07Z",
+      "team": "fun-with-agents-dominion-with-a-twist-room2",
+      "event": "Completed Laboratory Card Implementation",
+      "points": 25,
+      "type": "standard"
+    },
     {
       "timestamp": "2025-06-18T01:14:19Z",
       "team": "fun-with-agents-dominion-with-a-twist-room4",
