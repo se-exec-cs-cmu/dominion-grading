@@ -1,6 +1,22 @@
 {
-  "teams": {},
-  "lastUpdate": null,
+  "teams": {
+    "fun-with-agents-dominion-with-a-twist-room2": {
+      "totalPoints": 0,
+      "completedMilestones": [],
+      "customMilestones": [],
+      "submissions": [
+        {
+          "timestamp": "2025-06-18T01:12:40Z",
+          "points": 0,
+          "passed": 0,
+          "failed": 2,
+          "custom": 0
+        }
+      ],
+      "lastSubmission": "2025-06-18T01:12:40Z"
+    }
+  },
+  "lastUpdate": "2025-06-18T01:13:26.474926",
   "milestoneStats": {},
   "customMilestones": {},
   "timeline": []
